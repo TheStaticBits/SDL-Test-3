@@ -18,15 +18,23 @@ Window::Window()
 		util::logError("SDL_GetCurrentDisplayMode failed");
 	
 	size = { static_cast<uint32_t>(display.w), static_cast<uint32_t>(display.h) };
-	
+
+#ifndef WIN32 // MOBILE, only portrait mode
+	SDL_SetHint(SDL_HINT_ORIENTATIONS, "Portrait");
+#endif
+
 	util::logInfo("Setup window");
 	window = SDL_CreateWindow(std::string(C::WIN_TITLE).c_str(), 
 							  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 							  display.w, display.h, 
-							  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+//#ifdef WIN32
+							  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED );
+//#else
+//							  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_BORDERLESS );
+//#endif
 	if (window == NULL)
 		util::logError("Create Window failed");
-	
+
 	// SDL_SetWindowMinimumSize(window, display.w / 2, display.h / 2);
 	
 	// Setup renderer
