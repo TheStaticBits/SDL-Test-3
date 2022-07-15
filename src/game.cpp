@@ -13,7 +13,10 @@ Game::Game()
 
 Game::~Game()
 {
-	
+	util::logInfo("Quitting SDL");
+	TTF_Quit();
+	IMG_Quit();
+	SDL_Quit();
 }
 
 const bool Game::init()
@@ -33,4 +36,6 @@ void Game::start()
 void Game::iteration()
 {
 	window.update();
+	
+	std::cout << window.getTouchHeld() << std::endl;
 }

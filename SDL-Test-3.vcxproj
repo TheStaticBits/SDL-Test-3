@@ -167,14 +167,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\environment.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\constants.h" />
+    <ClInclude Include="include\environment.h" />
     <ClInclude Include="include\game.h" />
+    <ClInclude Include="include\player.h" />
     <ClInclude Include="include\rect.h" />
     <ClInclude Include="include\texture.h" />
     <ClInclude Include="include\utility.h" />

@@ -5,6 +5,8 @@
     <ClCompile Include="src\window.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\game.cpp" />
+    <ClCompile Include="src\environment.cpp" />
+    <ClCompile Include="src\player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\window.h" />
@@ -13,6 +15,8 @@
     <ClInclude Include="include\rect.h" />
     <ClInclude Include="include\constants.h" />
     <ClInclude Include="include\game.h" />
+    <ClInclude Include="include\environment.h" />
+    <ClInclude Include="include\player.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

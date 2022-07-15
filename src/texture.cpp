@@ -9,7 +9,7 @@
 #include "utility.h"
 
 Texture::Texture(Window& window, const std::string path, const Vect<float> pos, const uint32_t scale)
-	: tex(window.loadTex(path)), rect(pos, (util::getSize(tex) * scale).cast<float>()), scale(scale)
+	: tex(window.loadTex(path)), rect(pos, getTexSize()), scale(scale)
 {
 	
 }

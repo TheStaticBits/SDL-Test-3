@@ -35,6 +35,8 @@ Window::Window()
 	if (C::VSYNC == true) rendererFlags |= SDL_RENDERER_PRESENTVSYNC;
 	renderer = SDL_CreateRenderer(window, -1, rendererFlags);
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+	SDL_SetRenderDrawColor(renderer, C::bgColor.r, C::bgColor.g, C::bgColor.b, C::bgColor.a);
 }
 
 Window::~Window()
@@ -109,14 +111,32 @@ void Window::render(Texture& tex, const SDL_Rect src)
 	}
 }
 
+void Window::render(Texture& tex, const double angle)
+{
+	if (SDL_RenderCopyEx(renderer, tex.getTex(), NULL, &(tex.getRectRef().getSDLRect()), angle, NULL, SDL_FLIP_NONE) != 0)
+	{
+		util::logError("Failed to render texture with SDL_RenderCopyEx at rect " + tex.getRectRef().str());
+		drawRect(tex.getRectRef(), { 0, 0, 0, 255 });
+	}
+}
+
+void Window::render(Texture& tex, const SDL_RendererFlip flip)
+{
+	if (SDL_RenderCopyEx(renderer, tex.getTex(), NULL, &(tex.getRectRef().getSDLRect()), 0, NULL, flip) != 0)
+	{
+		util::logError("Failed to render texture with SDL_RenderCopyEx at rect " + tex.getRectRef().str());
+		drawRect(tex.getRectRef(), { 0, 0, 0, 255 });
+	}
+}
+
 void Window::drawRect(Rect<float>& rect, const SDL_Color& color)
 {
 	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 	
 	if (SDL_RenderFillRect(renderer, &rect.getSDLRect()) != 0)
 		util::logError("Failed to fill rect " + rect.str());
-	
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+	SDL_SetRenderDrawColor(renderer, C::bgColor.r, C::bgColor.g, C::bgColor.b, C::bgColor.a);
 }
 
 void Window::handleEvents()
@@ -128,7 +148,7 @@ void Window::handleEvents()
 		{
 		case SDL_QUIT:
 			quit = true; break;
-			
+
 		case SDL_WINDOWEVENT:
 			switch (e.window.event)
 			{
@@ -139,13 +159,39 @@ void Window::handleEvents()
 			case SDL_WINDOWEVENT_MAXIMIZED:
 				break;
 			}
-			
+
 			break;
-		
+
 		case SDL_RENDER_TARGETS_RESET:
 			break; // Add here if needed
+		
+		// Inputs
+		case SDL_MOUSEBUTTONDOWN: 
+			touchHeld = true;
+			break;
+		case SDL_MOUSEBUTTONUP:
+			touchHeld = false;
+			break;
+		
+		// Fingers 
+		case SDL_FINGERDOWN:
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+			updateTouchPos(e);
+			touchHeld = true;
+			break;
+		case SDL_FINGERMOTION:
+			SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+			updateTouchPos(e);
+			break;
+		case SDL_FINGERUP:
+			SDL_SetRenderDrawColor(renderer, C::bgColor.r, C::bgColor.g, C::bgColor.b, C::bgColor.a);
+			updateTouchPos(e);
+			touchHeld = false; 
+			break;
 		}
 	}
+	
+	updateMousePos();
 }
 
 void Window::updateDeltaTime()
@@ -158,7 +204,7 @@ void Window::updateDeltaTime()
 		fps = fpsCounter;
 		fpsCounter = 0;
 
-		if (C::LOG_FPS) util::logInfo(std::to_string(fps));
+		if (C::LOG_FPS) util::logInfo(std::to_string(fps) + " FPS");
 	}
 	
 	deltaTime = static_cast<float>(currentTime - lastTime) / 1000;
@@ -170,4 +216,16 @@ void Window::resize(int32_t width, int32_t height)
 {
 	size = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
 	SDL_SetWindowSize(window, width, height);
+}
+
+void Window::updateTouchPos(SDL_Event& e)
+{
+	touchPos = Vect<float>{ e.tfinger.x, e.tfinger.y }.cast<uint32_t>() * size;
+}
+
+void Window::updateMousePos()
+{
+	Vect<int> getPos;
+	SDL_GetMouseState(&getPos.x, &getPos.y);
+	touchPos = getPos.cast<uint32_t>();
 }

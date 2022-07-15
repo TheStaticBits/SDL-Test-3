@@ -19,12 +19,12 @@ namespace util
 
 	inline void logInfo(const std::string msg)
 	{
-		//log("[INFO]: " + msg);
+		log("[INFO]: " + msg);
 	}
 	
 	inline void logError(const std::string msg)
 	{
-		//log("[ERROR]: " + msg + " (" + SDL_GetError() + ")");
+		log("[ERROR]: " + msg + " (" + SDL_GetError() + ")");
 	}
 
 	inline Vect<uint32_t> getSize(SDL_Texture* texture)

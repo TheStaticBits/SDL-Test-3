@@ -11,18 +11,20 @@ class Window;
 class Texture
 {
 public:
-	Texture(Window& window, const std::string path, const Vect<float> pos, const uint32_t scale = 1);
+	Texture(Window& window, const std::string path, const Vect<float> pos = { 0, 0 }, const uint32_t scale = 1);
 	~Texture();
+
+	inline void setScale(const uint32_t newScale) { scale = newScale; };
 	
 	inline SDL_Texture* getTex() { return tex; }
-	inline const Rect<float> getRect() { return rect; }
+	inline const Rect<float> getRect() const { return rect; }
 	inline Rect<float>& getRectRef() { return rect; }
 
-	inline Vect<float> getTexSize() { return util::getSize(tex).cast<float>(); }
+	inline Vect<float> getTexSize() const { return (util::getSize(tex) * scale).cast<float>(); }
 
 private:
 	SDL_Texture* tex;
 	Rect<float> rect; // Including size and position
 	
-	const uint32_t scale;
+	uint32_t scale;
 };
