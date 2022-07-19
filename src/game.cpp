@@ -38,7 +38,7 @@ void Game::start()
 void Game::iteration()
 {
 	window.update();
-	player.update(window);
+	player.update(window, environment);
 	
 	environment.render(window, player);
 	player.render(window);

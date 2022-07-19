@@ -24,7 +24,7 @@ Window::Window()
 #endif
 
 	util::logInfo("Setup window");
-	window = SDL_CreateWindow(std::string(C::WIN_TITLE).c_str(), 
+	window = SDL_CreateWindow(std::string(Consts::WIN_TITLE).c_str(), 
 							  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 							  display.w, display.h, 
 //#ifdef WIN32
@@ -40,11 +40,11 @@ Window::Window()
 	// Setup renderer
 	util::logInfo("Setup renderer");
 	uint32_t rendererFlags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE;
-	if (C::VSYNC == true) rendererFlags |= SDL_RENDERER_PRESENTVSYNC;
+	if (Consts::VSYNC == true) rendererFlags |= SDL_RENDERER_PRESENTVSYNC;
 	renderer = SDL_CreateRenderer(window, -1, rendererFlags);
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-	SDL_SetRenderDrawColor(renderer, C::bgColor.r, C::bgColor.g, C::bgColor.b, C::bgColor.a);
+	SDL_SetRenderDrawColor(renderer, Consts::bgColor.r, Consts::bgColor.g, Consts::bgColor.b, Consts::bgColor.a);
 }
 
 Window::~Window()
@@ -144,7 +144,7 @@ void Window::drawRect(Rect<float>& rect, const SDL_Color& color)
 	if (SDL_RenderFillRect(renderer, &rect.getSDLRect()) != 0)
 		util::logError("Failed to fill rect " + rect.str());
 
-	SDL_SetRenderDrawColor(renderer, C::bgColor.r, C::bgColor.g, C::bgColor.b, C::bgColor.a);
+	SDL_SetRenderDrawColor(renderer, Consts::bgColor.r, Consts::bgColor.g, Consts::bgColor.b, Consts::bgColor.a);
 }
 
 void Window::handleEvents()
@@ -192,7 +192,7 @@ void Window::handleEvents()
 			updateTouchPos(e);
 			break;
 		case SDL_FINGERUP:
-			SDL_SetRenderDrawColor(renderer, C::bgColor.r, C::bgColor.g, C::bgColor.b, C::bgColor.a);
+			SDL_SetRenderDrawColor(renderer, Consts::bgColor.r, Consts::bgColor.g, Consts::bgColor.b, Consts::bgColor.a);
 			updateTouchPos(e);
 			touchHeld = false; 
 			break;
@@ -212,7 +212,7 @@ void Window::updateDeltaTime()
 		fps = fpsCounter;
 		fpsCounter = 0;
 
-		if (C::LOG_FPS) util::logInfo(std::to_string(fps) + " FPS");
+		if (Consts::LOG_FPS) util::logInfo(std::to_string(fps) + " FPS");
 	}
 	
 	deltaTime = static_cast<float>(currentTime - lastTime) / 1000;

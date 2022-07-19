@@ -14,7 +14,7 @@ public:
 	Player(Window& window, Environment& env);
 	~Player();
 
-	void update(Window& window);
+	void update(Window& window, Environment& env);
 	void render(Window& window);
 
 	inline const int64_t getOffset() const { return offset; };

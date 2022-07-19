@@ -9,7 +9,7 @@
 #include "environment.h"
 
 Player::Player(Window& window, Environment& env)
-	: tex(window, std::string(C::PLAYER_FP)), speed(C::P_NORM_SPEED), offset(0), fOffset(0)
+	: tex(window, std::string(Consts::PLAYER_FP)), speed(Consts::P_NORM_SPEED), offset(0), fOffset(0)
 {
 	// Center player
 	tex.setScale(env.getScale());
@@ -23,9 +23,11 @@ Player::~Player()
 	
 }
 
-void Player::update(Window& window)
+void Player::update(Window& window, Environment& env)
 {
-	fOffset += window.getDeltaTime() * 100;
+	speed = Consts::P_NORM_SPEED;
+
+	fOffset += window.getDeltaTime() * speed * env.getScale();
 	offset = static_cast<int64_t>(fOffset);
 }
 

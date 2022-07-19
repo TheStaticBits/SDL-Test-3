@@ -3,7 +3,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 
-namespace C
+namespace Consts // Constants
 {
 	constexpr std::string_view WIN_TITLE = "SDL Test 3!!";
 	constexpr SDL_Color bgColor = { 0, 25, 174, 255 };
@@ -15,7 +15,7 @@ namespace C
 	constexpr std::string_view PLAYER_FP = "res/player.png";
 
 	// Player speeds
-	constexpr float P_NORM_SPEED = 2.5f;
+	constexpr float P_NORM_SPEED = 40.5f;
 	constexpr float P_SPEADUP_SPEED = 5.0f;
 
 	// Play area/Environment variables
