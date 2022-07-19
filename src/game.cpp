@@ -7,6 +7,8 @@
 #include "utility.h"
 
 Game::Game()
+	: environment(window),
+	  player(window, environment)
 {
 	
 }
@@ -36,6 +38,8 @@ void Game::start()
 void Game::iteration()
 {
 	window.update();
+	player.update(window);
 	
-	std::cout << window.getTouchHeld() << std::endl;
+	environment.render(window, player);
+	player.render(window);
 }

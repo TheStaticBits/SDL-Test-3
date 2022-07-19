@@ -14,17 +14,14 @@ public:
 	Texture(Window& window, const std::string path, const Vect<float> pos = { 0, 0 }, const uint32_t scale = 1);
 	~Texture();
 
-	inline void setScale(const uint32_t newScale) { scale = newScale; };
+	void setScale(const uint32_t newScale);
 	
-	inline SDL_Texture* getTex() { return tex; }
-	inline const Rect<float> getRect() const { return rect; }
-	inline Rect<float>& getRectRef() { return rect; }
+	inline SDL_Texture* getTex()  { return tex;  }
+	inline Rect<float>& getRect() { return rect; }
 
-	inline Vect<float> getTexSize() const { return (util::getSize(tex) * scale).cast<float>(); }
+	inline Vect<float> getTexSize(const uint32_t scale) const { return (util::getSize(tex) * scale).cast<float>(); }
 
 private:
 	SDL_Texture* tex;
 	Rect<float> rect; // Including size and position
-	
-	uint32_t scale;
 };

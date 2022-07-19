@@ -6,7 +6,7 @@
 namespace C
 {
 	constexpr std::string_view WIN_TITLE = "SDL Test 3!!";
-	constexpr SDL_Color bgColor = { 25, 174, 255, 255 };
+	constexpr SDL_Color bgColor = { 0, 25, 174, 255 };
 	constexpr bool VSYNC = true;
 	constexpr bool LOG_FPS = true;
 
@@ -18,7 +18,7 @@ namespace C
 	constexpr float P_NORM_SPEED = 2.5f;
 	constexpr float P_SPEADUP_SPEED = 5.0f;
 
-	// Play area variables
-	constexpr uint32_t minHeight = 16 * 14; // Minimum pixel height 
-	constexpr uint32_t widthGap = 16 * 7; // Gap between walls
+	// Play area/Environment variables
+	constexpr uint32_t MIN_HEIGHT = 16 * 14; // Minimum pixel height 
+	constexpr uint32_t TUNNEL_WIDTH= 16 * 7; // Gap between walls
 }

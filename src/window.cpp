@@ -49,13 +49,13 @@ Window::Window()
 
 Window::~Window()
 {
-	util::logInfo("Destroying window");
-	SDL_DestroyWindow(window);
-	SDL_DestroyRenderer(renderer);
-	
 	util::logInfo("Destroying textures");
 	for (SDL_Texture*& tex : textures)
 		SDL_DestroyTexture(tex);
+
+	util::logInfo("Destroying window");
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
 }
 
 SDL_Texture* Window::loadTex(const std::string path)
@@ -100,40 +100,40 @@ void Window::update()
 
 void Window::render(Texture& tex)
 {
-	if (SDL_RenderCopy(renderer, tex.getTex(), NULL, &(tex.getRectRef().getSDLRect())) != 0)
+	if (SDL_RenderCopy(renderer, tex.getTex(), NULL, &(tex.getRect().getSDLRect())) != 0)
 	{
-		util::logError("Failed to render texture at rect " + tex.getRectRef().str());
+		util::logError("Failed to render texture at rect " + tex.getRect().str());
 		
 		// Rendering black square to signify broken texture
-		drawRect(tex.getRectRef(), { 0, 0, 0, 255 });
+		drawRect(tex.getRect(), { 0, 0, 0, 255 });
 	}
 }
 
 // Maybe not the best use of overloaded functions?
 void Window::render(Texture& tex, const SDL_Rect src)
 {
-	if (SDL_RenderCopy(renderer, tex.getTex(), &src, &(tex.getRectRef().getSDLRect())) != 0)
+	if (SDL_RenderCopy(renderer, tex.getTex(), &src, &(tex.getRect().getSDLRect())) != 0)
 	{
-		util::logError("Failed to render texture with source at rect " + tex.getRectRef().str());
-		drawRect(tex.getRectRef(), { 0, 0, 0, 255 });
+		util::logError("Failed to render texture with source at rect " + tex.getRect().str());
+		drawRect(tex.getRect(), { 0, 0, 0, 255 });
 	}
 }
 
 void Window::render(Texture& tex, const double angle)
 {
-	if (SDL_RenderCopyEx(renderer, tex.getTex(), NULL, &(tex.getRectRef().getSDLRect()), angle, NULL, SDL_FLIP_NONE) != 0)
+	if (SDL_RenderCopyEx(renderer, tex.getTex(), NULL, &(tex.getRect().getSDLRect()), angle, NULL, SDL_FLIP_NONE) != 0)
 	{
-		util::logError("Failed to render texture with SDL_RenderCopyEx at rect " + tex.getRectRef().str());
-		drawRect(tex.getRectRef(), { 0, 0, 0, 255 });
+		util::logError("Failed to render texture with SDL_RenderCopyEx at rect " + tex.getRect().str());
+		drawRect(tex.getRect(), { 0, 0, 0, 255 });
 	}
 }
 
 void Window::render(Texture& tex, const SDL_RendererFlip flip)
 {
-	if (SDL_RenderCopyEx(renderer, tex.getTex(), NULL, &(tex.getRectRef().getSDLRect()), 0, NULL, flip) != 0)
+	if (SDL_RenderCopyEx(renderer, tex.getTex(), NULL, &(tex.getRect().getSDLRect()), 0, NULL, flip) != 0)
 	{
-		util::logError("Failed to render texture with SDL_RenderCopyEx at rect " + tex.getRectRef().str());
-		drawRect(tex.getRectRef(), { 0, 0, 0, 255 });
+		util::logError("Failed to render texture with SDL_RenderCopyEx at rect " + tex.getRect().str());
+		drawRect(tex.getRect(), { 0, 0, 0, 255 });
 	}
 }
 

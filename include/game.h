@@ -1,6 +1,8 @@
 #pragma once
 
 #include "window.h"
+#include "environment.h"
+#include "player.h"
 
 class Game
 {
@@ -15,4 +17,7 @@ public:
 
 private:
 	Window window;
+
+	Environment environment;
+	Player player;
 };

@@ -17,9 +17,12 @@ public:
 	void update(Window& window);
 	void render(Window& window);
 
+	inline const int64_t getOffset() const { return offset; };
+
 private:
 	Texture tex;
 	float speed;
 	
 	int64_t offset;
+	float fOffset;
 };

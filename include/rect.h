@@ -102,7 +102,7 @@ struct Rect
 												  std::to_string(w) + ", " +
 												  std::to_string(h) + ")"; }
 
-	inline void print() { SDL_Log(("Rect: " + str()).c_str()); }
+	inline void print() { SDL_Log("%s", ("Rect: " + str()).c_str()); }
 	
 	inline SDL_Rect& getSDLRect() 
 	{ 
@@ -113,4 +113,7 @@ struct Rect
 	
 	inline void changePos(Vect<T> newPos)   { x = newPos.x; y = newPos.y; }
 	inline void changeSize(Vect<T> newSize) { w = newSize.x; h = newSize.y; }
+
+	template<typename U>
+	Rect<U> cast() { return Rect<U>{ static_cast<U>(x), static_cast<U>(y), static_cast<U>(w), static_cast<U>(h) }; }
 };

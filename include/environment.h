@@ -15,12 +15,13 @@ public:
 	~Environment();
 
 	void render(Window& window, Player& player);
+	void determineScale(Window& window);
 
 	inline const uint32_t getScale() { return scale; }
 
 private:
-	void determineScale(Window& window);
-
+	void renderWall(Window& window, Player& player, const uint32_t x, const bool flip = false);
+	
 	Texture wall;
 	uint32_t scale;
 };

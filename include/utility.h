@@ -10,7 +10,7 @@ namespace util
 {
 	inline void log(const std::string msg)
 	{
-		SDL_Log("%s", msg.c_str());
+		//SDL_Log("%s", msg.c_str());
 		
 //#ifdef _DEBUG
 //		// Add to log file potentially
