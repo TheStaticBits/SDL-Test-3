@@ -10,7 +10,7 @@ namespace util
 {
 	inline void log(const std::string msg)
 	{
-		//SDL_Log("%s", msg.c_str());
+		SDL_Log("%s", msg.c_str());
 		
 //#ifdef _DEBUG
 //		// Add to log file potentially
@@ -32,5 +32,11 @@ namespace util
 		Vect<int> result(0, 0);
 		SDL_QueryTexture(texture, NULL, NULL, &result.x, &result.y);
 		return result.cast<uint32_t>();
+	}
+
+	inline const int64_t abs(int64_t num)
+	{
+		if (num < 0) num *= -1;
+		return num;
 	}
 }

@@ -25,7 +25,12 @@ Player::~Player()
 
 void Player::update(Window& window, Environment& env)
 {
-	speed = Consts::P_NORM_SPEED;
+	if (window.getSwipeUp())
+		speed = Consts::P_SPEEDUP_SPEED;
+	else if (window.getSwipeDown())
+		speed = Consts::P_SLOWDOWN_SPEED;
+	else
+		speed = Consts::P_NORM_SPEED;
 
 	fOffset += window.getDeltaTime() * speed * env.getScale();
 	offset = static_cast<int64_t>(fOffset);

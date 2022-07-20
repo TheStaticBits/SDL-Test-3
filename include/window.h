@@ -36,6 +36,9 @@ public:
 
 	inline const bool getTouchHeld() const { return touchHeld; }
 	inline Vect<uint32_t>& getTouchPos() { return touchPos; }
+
+	inline const bool getSwipeUp() const { return swipeUp; }
+	inline const bool getSwipeDown() const { return swipeDown; }
 	
 private:
 	void handleEvents();
@@ -43,8 +46,11 @@ private:
 
 	void resize(int32_t width, int32_t height);
 
-	void updateTouchPos(SDL_Event& e);
+	Vect<uint32_t> getTouchVect(SDL_Event& e);
 	void updateMousePos();
+
+	void testSwipe();
+	void resetInputs();
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
@@ -60,6 +66,10 @@ private:
 
 	bool touchHeld;
 	Vect<uint32_t> touchPos; 
+
+	Vect<uint32_t> swipeOrigin;
+	bool swipeUp;
+	bool swipeDown;
 
 	bool quit;
 };

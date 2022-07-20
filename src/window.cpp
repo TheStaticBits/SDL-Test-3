@@ -149,6 +149,8 @@ void Window::drawRect(Rect<float>& rect, const SDL_Color& color)
 
 void Window::handleEvents()
 {
+	updateMousePos();
+
 	SDL_Event e;
 	while (SDL_PollEvent(&e))
 	{
@@ -173,33 +175,36 @@ void Window::handleEvents()
 		case SDL_RENDER_TARGETS_RESET:
 			break; // Add here if needed
 		
+#ifdef WIN32
 		// Inputs
-		case SDL_MOUSEBUTTONDOWN: 
+		case SDL_MOUSEBUTTONDOWN:
+			swipeOrigin = touchPos;
 			touchHeld = true;
 			break;
 		case SDL_MOUSEBUTTONUP:
 			touchHeld = false;
+			resetInputs();
 			break;
-		
+#else	
 		// Fingers 
 		case SDL_FINGERDOWN:
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-			updateTouchPos(e);
+			touchPos = getTouchVect(e);
+			swipeOrigin = touchPos;
 			touchHeld = true;
 			break;
+		
 		case SDL_FINGERMOTION:
-			SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-			updateTouchPos(e);
+			touchPos = getTouchVect(e);
+			testSwipe();
 			break;
+		
 		case SDL_FINGERUP:
-			SDL_SetRenderDrawColor(renderer, Consts::bgColor.r, Consts::bgColor.g, Consts::bgColor.b, Consts::bgColor.a);
-			updateTouchPos(e);
-			touchHeld = false; 
+			touchPos = getTouchVect(e);
+			resetInputs();
 			break;
+#endif
 		}
 	}
-	
-	updateMousePos();
 }
 
 void Window::updateDeltaTime()
@@ -226,9 +231,9 @@ void Window::resize(int32_t width, int32_t height)
 	SDL_SetWindowSize(window, width, height);
 }
 
-void Window::updateTouchPos(SDL_Event& e)
+Vect<uint32_t> Window::getTouchVect(SDL_Event& e)
 {
-	touchPos = Vect<float>{ e.tfinger.x, e.tfinger.y }.cast<uint32_t>() * size;
+	return Vect<float>{ e.tfinger.x, e.tfinger.y }.cast<uint32_t>() * size;
 }
 
 void Window::updateMousePos()
@@ -236,4 +241,28 @@ void Window::updateMousePos()
 	Vect<int> getPos;
 	SDL_GetMouseState(&getPos.x, &getPos.y);
 	touchPos = getPos.cast<uint32_t>();
+	
+	if (touchHeld) testSwipe();
+}
+
+void Window::testSwipe()
+{
+	const int64_t yMove = util::abs(static_cast<int64_t>(touchPos.y) - static_cast<int64_t>(swipeOrigin.y));
+
+	// Test if swipe is long enough
+	if (yMove < size.y * Consts::SCREEN_SWIPE_PERCENT) return;
+
+	const int64_t xMove = util::abs(static_cast<int64_t>(touchPos.x) - static_cast<int64_t>(swipeOrigin.x));
+	if (xMove > yMove) return; // Make sure player didn't swipe horizontally
+
+	// Activate swipe
+	swipeUp = (touchPos.y < swipeOrigin.y);
+	swipeDown = !swipeUp;
+}
+
+void Window::resetInputs()
+{
+	touchHeld = false;
+	swipeUp = false;
+	swipeDown = false;
 }
