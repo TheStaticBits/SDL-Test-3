@@ -1,6 +1,8 @@
 #include "environment.h"
 
 #include <iostream>
+#include <nlohmann/json.hpp>
+#include <vector>
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -8,12 +10,17 @@
 #include "window.h"
 #include "constants.h"
 #include "player.h"
+#include "obstacle.h"
+#include "utility.h"
 
-Environment::Environment(Window& window)
-	: wall(window, std::string(Consts::WALL_FP)), scale(1)
+Environment::Environment(Window& window, Player& player, const nlohmann::json& gData)
+	: wall(window, std::string(Consts::WALL_FP)), scale(1), canSpawn(true)
 {
+	util::logInfo("Loading obstacles from " + std::string(Consts::OBSTACLE_FP));
+	Obstacle::load(window);
 	determineScale(window);
-	wall.setScale(scale);
+	
+	addObstacle(window, player, gData);
 }
 
 Environment::~Environment()
@@ -21,8 +28,31 @@ Environment::~Environment()
 	
 }
 
+void Environment::update(Window& window, Player& player, const nlohmann::json& obstacleData)
+{
+	if (obstacles.size() > 0 && obstacles[0].shouldSpawnNew(window, player, scale))
+	{
+		if (canSpawn)
+		{
+			addObstacle(window, player, obstacleData);
+			canSpawn = false;
+		}
+
+		if (obstacles[0].isOffScreen(window, player))
+		{
+			util::logInfo("Obstacle removed", true);
+			obstacles.erase(obstacles.begin());
+			canSpawn = true;
+		}
+	}
+}
+
 void Environment::render(Window& window, Player& player)
 {
+	// Obstacles
+	for (Obstacle& obstacle : obstacles)
+		obstacle.render(window, player);
+	
 	// Left wall
 	renderWall(window, player, (window.getSize().x - Consts::TUNNEL_WIDTH * scale) / 2 - static_cast<uint32_t>(wall.getRect().w));
 	renderWall(window, player, (window.getSize().x + Consts::TUNNEL_WIDTH * scale) / 2, true);
@@ -30,7 +60,7 @@ void Environment::render(Window& window, Player& player)
 
 void Environment::determineScale(Window& window)
 {
-	for (;; scale++)
+	for (scale = 1; ; scale++)
 	{
 		Rect<float>& wallSize = wall.getRect();
 		
@@ -43,7 +73,18 @@ void Environment::determineScale(Window& window)
 		}
 	}
 
+	if (scale == 0)
+		util::logError("Screen size not supported. Screen size is: " + window.getSize().str());
+
 	util::log("Set scale to " + std::to_string(scale));
+
+	wall.setScale(scale);
+}
+
+void Environment::addObstacle(Window& window, Player& player, const nlohmann::json& obstacleData)
+{
+	util::logInfo("Adding obstacle", true);
+	obstacles.emplace_back(Obstacle(window, player, obstacleData[std::string(Consts::OBSTACLE_DP)][rand() % obstacleData.size()], scale));
 }
 
 void Environment::renderWall(Window& window, Player& player, const uint32_t x, const bool flip)

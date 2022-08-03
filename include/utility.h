@@ -5,6 +5,7 @@
 #include <string>
 
 #include "rect.h"
+#include "constants.h"
 
 namespace util
 {
@@ -17,9 +18,10 @@ namespace util
 //#endif
 	}
 
-	inline void logInfo(const std::string msg)
+	inline void logInfo(const std::string msg, const bool verbose = false)
 	{
-		log("[INFO]: " + msg);
+		if (verbose && Consts::LOG_VERBOSE || !verbose)
+			log("[INFO]: " + msg);
 	}
 	
 	inline void logError(const std::string msg)

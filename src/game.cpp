@@ -1,16 +1,23 @@
 #include "game.h"
 
+#include <fstream>
+#include <stdlib.h>
+#include <time.h>
+#include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <nlohmann/json.hpp>
 
 #include "utility.h"
+#include "constants.h"
 
 Game::Game()
-	: environment(window),
-	  player(window, environment)
+	: gData(nlohmann::json::parse(std::ifstream(std::string(Consts::DATA_FP)))), // Load JSON from DATA_FP string_view
+	  player(window), environment(window, player, gData)
 {
-	
+	player.resize(window, environment);
+	srand(static_cast<unsigned int>(time(NULL))); // Set seed for random events
 }
 
 Game::~Game()
@@ -39,6 +46,14 @@ void Game::iteration()
 {
 	window.update();
 	player.update(window, environment);
+	environment.update(window, player, gData);
+
+	if (window.getResized())
+	{
+		// Resize environment
+		environment.determineScale(window);
+		player.resize(window, environment);
+	}
 	
 	environment.render(window, player);
 	player.render(window);

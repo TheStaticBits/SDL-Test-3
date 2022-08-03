@@ -8,14 +8,10 @@
 #include "constants.h"
 #include "environment.h"
 
-Player::Player(Window& window, Environment& env)
+Player::Player(Window& window)
 	: tex(window, std::string(Consts::PLAYER_FP)), speed(Consts::P_NORM_SPEED), offset(0), fOffset(0)
 {
-	// Center player
-	tex.setScale(env.getScale());
-	tex.getRect().x = (window.getSize().x - tex.getRect().w) / 2;
-	// Set player at 3 quarters of the way down the screen
-	tex.getRect().y = (static_cast<float>(window.getSize().y) * 0.75f) - (tex.getRect().h / 2);
+	
 }
 
 Player::~Player()
@@ -39,4 +35,13 @@ void Player::update(Window& window, Environment& env)
 void Player::render(Window& window)
 {
 	window.render(tex);
+}
+
+void Player::resize(Window& window, Environment& env)
+{
+	// Center player
+	tex.setScale(env.getScale());
+	tex.getRect().x = (window.getSize().x - tex.getRect().w) / 2;
+	// Set player position on screen
+	tex.getRect().y = (static_cast<float>(window.getSize().y) * Consts::P_POS_PERCENT) - (tex.getRect().h / 2);
 }

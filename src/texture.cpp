@@ -14,6 +14,12 @@ Texture::Texture(Window& window, const std::string path, const Vect<float> pos, 
 	
 }
 
+Texture::Texture()
+	: tex(NULL)
+{
+	
+}
+
 Texture::~Texture()
 {
 	

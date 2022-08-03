@@ -11,13 +11,16 @@ class Environment;
 class Player
 {
 public:
-	Player(Window& window, Environment& env);
+	Player(Window& window);
 	~Player();
 
 	void update(Window& window, Environment& env);
 	void render(Window& window);
 
-	inline const int64_t getOffset() const { return offset; };
+	void resize(Window& window, Environment& env);
+
+	inline const int64_t getOffset() const { return offset; }
+	inline Texture& getTex() { return tex; }
 
 private:
 	Texture tex;

@@ -42,10 +42,11 @@ struct Vect
 	const bool operator<=(const Vect& other) { return x <= other.x && y <= other.y; }
 	const bool operator>=(const Vect& other) { return x >= other.x && y >= other.y; }
 
-	void print() { SDL_Log(("Vect: (" + std::to_string(x) + ", " + std::to_string(y) + ")").c_str()); }
+	const std::string str() const { return "Vect: (" + std::to_string(x) + ", " + std::to_string(y) + ")"; }
+	void print() const { SDL_Log("%s", ("Vect: " + str()).c_str()); }
 	
 	template<typename U>
-	Vect<U> cast() { return Vect<U>{ static_cast<U>(x), static_cast<U>(y) }; }
+	Vect<U> cast() const { return Vect<U>{ static_cast<U>(x), static_cast<U>(y) }; }
 };
 
 // A wrapper around the SDL Rect object
@@ -97,14 +98,14 @@ struct Rect
 	inline const bool operator<=(const Rect& other) { return x <= other.x && y <= other.y && w <= other.w && h <= other.h; }
 	inline const bool operator>=(const Rect& other) { return x >= other.x && y >= other.y && w >= other.w && h >= other.h; }
 
-	inline const std::string str() { return "(" + std::to_string(x) + ", " + 
-												  std::to_string(y) + ", " +
-												  std::to_string(w) + ", " +
-												  std::to_string(h) + ")"; }
+	inline const std::string str() const { return "(" + std::to_string(x) + ", " +
+												        std::to_string(y) + ", " +
+												        std::to_string(w) + ", " +
+												        std::to_string(h) + ")"; }
 
-	inline void print() { SDL_Log("%s", ("Rect: " + str()).c_str()); }
+	inline void print() const { SDL_Log("%s", ("Rect: " + str()).c_str()); }
 	
-	inline SDL_Rect& getSDLRect() 
+	inline SDL_Rect& getSDLRect()
 	{ 
 		sdlRect = { static_cast<int>(x), static_cast<int>(y), 
 				    static_cast<int>(w), static_cast<int>(h) };
@@ -115,5 +116,5 @@ struct Rect
 	inline void changeSize(Vect<T> newSize) { w = newSize.x; h = newSize.y; }
 
 	template<typename U>
-	Rect<U> cast() { return Rect<U>{ static_cast<U>(x), static_cast<U>(y), static_cast<U>(w), static_cast<U>(h) }; }
+	Rect<U> cast() const { return Rect<U>{ static_cast<U>(x), static_cast<U>(y), static_cast<U>(w), static_cast<U>(h) }; }
 };

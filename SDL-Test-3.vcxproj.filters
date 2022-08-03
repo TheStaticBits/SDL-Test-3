@@ -7,6 +7,8 @@
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\environment.cpp" />
     <ClCompile Include="src\player.cpp" />
+    <ClCompile Include="src\obstacle.cpp" />
+    <ClCompile Include="src\spritesheet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\window.h" />
@@ -17,8 +19,13 @@
     <ClInclude Include="include\game.h" />
     <ClInclude Include="include\environment.h" />
     <ClInclude Include="include\player.h" />
+    <ClInclude Include="include\obstacle.h" />
+    <ClInclude Include="include\spritesheet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\data.json" />
   </ItemGroup>
 </Project>

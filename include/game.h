@@ -1,5 +1,7 @@
 #pragma once
 
+#include <nlohmann/json.hpp>
+
 #include "window.h"
 #include "environment.h"
 #include "player.h"
@@ -18,6 +20,8 @@ public:
 private:
 	Window window;
 
-	Environment environment;
+	nlohmann::json gData;
+
 	Player player;
+	Environment environment;
 };

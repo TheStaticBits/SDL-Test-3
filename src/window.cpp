@@ -1,17 +1,21 @@
 #include "window.h"
 
 #include <iostream>
+#include <algorithm>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 #include "utility.h"
 #include "constants.h"
 #include "texture.h"
+#include "rect.h"
 
 Window::Window()
 	: window(NULL), renderer(NULL), 
 	  deltaTime(0.0f), lastTime(0),
-	  fpsCounter(0), fps(0), quit(false)
+	  fpsCounter(0), fps(0),
+	  swipeUp(false), swipeDown(false),
+	  resized(false), quit(false)
 {
 	SDL_DisplayMode display;
 	if (SDL_GetCurrentDisplayMode(0, &display) != 0)
@@ -110,9 +114,9 @@ void Window::render(Texture& tex)
 }
 
 // Maybe not the best use of overloaded functions?
-void Window::render(Texture& tex, const SDL_Rect src)
+void Window::render(Texture& tex, Rect<uint32_t> src)
 {
-	if (SDL_RenderCopy(renderer, tex.getTex(), &src, &(tex.getRect().getSDLRect())) != 0)
+	if (SDL_RenderCopy(renderer, tex.getTex(), &(src.getSDLRect()), &(tex.getRect().getSDLRect())) != 0)
 	{
 		util::logError("Failed to render texture with source at rect " + tex.getRect().str());
 		drawRect(tex.getRect(), { 0, 0, 0, 255 });
@@ -147,8 +151,21 @@ void Window::drawRect(Rect<float>& rect, const SDL_Color& color)
 	SDL_SetRenderDrawColor(renderer, Consts::bgColor.r, Consts::bgColor.g, Consts::bgColor.b, Consts::bgColor.a);
 }
 
+const bool Window::isTexValid(Texture& tex)
+{
+	// See if texture is in textures list
+	return std::find(textures.begin(), textures.end(), tex.getTex()) != textures.end();
+}
+
+void Window::closeTex(Texture& tex)
+{
+	SDL_DestroyTexture(tex.getTex());
+	textures.erase(std::remove(textures.begin(), textures.end(), tex.getTex()), textures.end());
+}
+
 void Window::handleEvents()
 {
+	resized = false;
 	updateMousePos();
 
 	SDL_Event e;
@@ -188,8 +205,10 @@ void Window::handleEvents()
 #else	
 		// Fingers 
 		case SDL_FINGERDOWN:
+			util::logInfo("fingerdown");
 			touchPos = getTouchVect(e);
 			swipeOrigin = touchPos;
+			swipeOrigin.print();
 			touchHeld = true;
 			break;
 		
@@ -199,6 +218,7 @@ void Window::handleEvents()
 			break;
 		
 		case SDL_FINGERUP:
+			util::logInfo("fingerup");
 			touchPos = getTouchVect(e);
 			resetInputs();
 			break;
@@ -227,13 +247,14 @@ void Window::updateDeltaTime()
 
 void Window::resize(int32_t width, int32_t height)
 {
+	resized = true;
 	size = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
 	SDL_SetWindowSize(window, width, height);
 }
 
 Vect<uint32_t> Window::getTouchVect(SDL_Event& e)
 {
-	return Vect<float>{ e.tfinger.x, e.tfinger.y }.cast<uint32_t>() * size;
+	return Vect<float>{ e.tfinger.x * static_cast<float>(size.x), e.tfinger.y * static_cast<float>(size.y) }.cast<uint32_t>();
 }
 
 void Window::updateMousePos()
@@ -250,10 +271,10 @@ void Window::testSwipe()
 	const int64_t yMove = util::abs(static_cast<int64_t>(touchPos.y) - static_cast<int64_t>(swipeOrigin.y));
 
 	// Test if swipe is long enough
-	if (yMove < size.y * Consts::SCREEN_SWIPE_PERCENT) return;
+	if (yMove < size.y * Consts::SCREEN_SWIPE_PERCENT) { swipeUp = false; swipeDown = false; return; }
 
 	const int64_t xMove = util::abs(static_cast<int64_t>(touchPos.x) - static_cast<int64_t>(swipeOrigin.x));
-	if (xMove > yMove) return; // Make sure player didn't swipe horizontally
+	if (xMove > yMove) { swipeUp = false; swipeDown = false; return; } // Make sure player didn't swipe horizontally
 
 	// Activate swipe
 	swipeUp = (touchPos.y < swipeOrigin.y);

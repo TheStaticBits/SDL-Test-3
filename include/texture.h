@@ -12,6 +12,7 @@ class Texture
 {
 public:
 	Texture(Window& window, const std::string path, const Vect<float> pos = { 0, 0 }, const uint32_t scale = 1);
+	Texture();
 	~Texture();
 
 	void setScale(const uint32_t newScale);

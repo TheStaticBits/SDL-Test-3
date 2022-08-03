@@ -23,14 +23,18 @@ public:
 
 	// Rendering functions
 	void render(Texture& tex);
-	void render(Texture& tex, const SDL_Rect src); // With source rect
+	void render(Texture& tex, Rect<uint32_t> src); // With source rect
 	void render(Texture& tex, const double angle); // Angle
 	void render(Texture& tex, const SDL_RendererFlip flip); // Render flip
 	void drawRect(Rect<float>& rect, const SDL_Color& color);
 
+	const bool isTexValid(Texture& tex);
+	void closeTex(Texture& tex);
+
 	// Getters!
 	inline const float getDeltaTime() const { return deltaTime; }
 	inline const bool closed() const { return quit; }
+	inline const bool getResized() const { return resized; }
 
 	Vect<uint32_t>& getSize() { return size; }
 
@@ -71,5 +75,6 @@ private:
 	bool swipeUp;
 	bool swipeDown;
 
+	bool resized;
 	bool quit;
 };
