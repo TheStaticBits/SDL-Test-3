@@ -39,7 +39,7 @@ Window::Window()
 	if (window == NULL)
 		util::logError("Create Window failed");
 
-	SDL_SetWindowMinimumSize(window, Consts::TUNNEL_WIDTH + 32, Consts::MIN_HEIGHT);
+	SDL_SetWindowMinimumSize(window, Consts::TUNNEL_WIDTH + 36, Consts::MIN_HEIGHT);
 	
 	// Setup renderer
 	util::logInfo("Setup renderer");

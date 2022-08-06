@@ -56,7 +56,7 @@ void Obstacle::render(Window& window, Player& player)
 
 void Obstacle::update(Player& player)
 {
-	distFromPlayer = player.getTex().getRect().y - (pOffset + player.getOffset()); // Used during resizing
+	distFromPlayer = static_cast<int64_t>(player.getTex().getRect().y) - (pOffset + player.getOffset()); // Used during resizing
 }
 
 const bool Obstacle::shouldSpawnNew(Window& window, Player& player)
@@ -73,10 +73,9 @@ void Obstacle::resize(Window& window, Player& player, const uint32_t newScale)
 {
 	// New distance between the player and the obstacle
 	float newDist = static_cast<float>(distFromPlayer) * (static_cast<float>(newScale) / static_cast<float>(scale));
-	
-	std::cout << pOffset << -(player.getOffset() - (player.getTex().getRect().y - newDist)) << std::endl;
+
 	// Finding the new offset
-	pOffset = -(player.getOffset() - (player.getTex().getRect().y - newDist));
+	pOffset = static_cast<int64_t>(player.getTex().getRect().y - newDist) - player.getOffset();
 	
 	scale = newScale;
 }
