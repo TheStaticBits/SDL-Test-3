@@ -13,34 +13,34 @@ struct Vect
 	Vect(T x, T y) : x(x), y(y) { }
 
 	// WARNING: BOILERPLATE AHEAD
-	Vect& operator=(const Vect& other) { x = other.x; y = other.y; return *this; }
+	Vect<T>& operator=(const Vect<T>& other) { x = other.x; y = other.y; return *this; }
 
-	Vect& operator+(const T n) { x += n; y += n; return *this; }
-	Vect& operator-(const T n) { x -= n; y -= n; return *this; }
-	Vect& operator*(const T n) { x *= n; y *= n; return *this; }
-	Vect& operator/(const T n) { x /= n; y /= n; return *this; }
+	Vect<T> operator+(const T n) { return Vect<T>{ x + n, y + n }; }
+	Vect<T> operator-(const T n) { return Vect<T>{ x - n, y - n }; }
+	Vect<T> operator*(const T n) { return Vect<T>{ x * n, y * n }; }
+	Vect<T> operator/(const T n) { return Vect<T>{ x / n, y / n }; }
 
-	Vect& operator+(const Vect& other) { x += other.x; y += other.y; return *this; }
-	Vect& operator-(const Vect& other) { x -= other.x; y -= other.y; return *this; }
-	Vect& operator*(const Vect& other) { x *= other.x; y *= other.y; return *this; }
-	Vect& operator/(const Vect& other) { x /= other.x; y /= other.y; return *this; }
+	Vect<T> operator+(const Vect<T>& other) { return Vect<T>{ x + other.x, y + other.y }; }
+	Vect<T> operator-(const Vect<T>& other) { return Vect<T>{ x - other.x, y - other.y }; }
+	Vect<T> operator*(const Vect<T>& other) { return Vect<T>{ x * other.x, y * other.y }; }
+	Vect<T> operator/(const Vect<T>& other) { return Vect<T>{ x / other.x, y / other.y }; }
 
-	Vect& operator+=(const T n) { x += n; y += n; return *this; }
-	Vect& operator-=(const T n) { x -= n; y -= n; return *this; }
-	Vect& operator*=(const T n) { x *= n; y *= n; return *this; }
-	Vect& operator/=(const T n) { x /= n; y /= n; return *this; }
+	Vect<T>& operator+=(const T n) { x += n; y += n; return *this; }
+	Vect<T>& operator-=(const T n) { x -= n; y -= n; return *this; }
+	Vect<T>& operator*=(const T n) { x *= n; y *= n; return *this; }
+	Vect<T>& operator/=(const T n) { x /= n; y /= n; return *this; }
 
-	Vect& operator+=(const Vect& other) { x += other.x; y += other.y; return *this; }
-	Vect& operator-=(const Vect& other) { x -= other.x; y -= other.y; return *this; }
-	Vect& operator*=(const Vect& other) { x *= other.x; y *= other.y; return *this; }
-	Vect& operator/=(const Vect& other) { x /= other.x; y /= other.y; return *this; }
+	Vect<T>& operator+=(const Vect<T>& other) { x += other.x; y += other.y; return *this; }
+	Vect<T>& operator-=(const Vect<T>& other) { x -= other.x; y -= other.y; return *this; }
+	Vect<T>& operator*=(const Vect<T>& other) { x *= other.x; y *= other.y; return *this; }
+	Vect<T>& operator/=(const Vect<T>& other) { x /= other.x; y /= other.y; return *this; }
 
-	const bool operator==(const Vect& other) { return x == other.x && y == other.y; }
-	const bool operator!=(const Vect& other) { return x != other.x || y != other.y; }
-	const bool operator<(const Vect& other)  { return x < other.x&& y < other.y;    }
-	const bool operator>(const Vect& other)  { return x > other.x && y > other.y;   }
-	const bool operator<=(const Vect& other) { return x <= other.x && y <= other.y; }
-	const bool operator>=(const Vect& other) { return x >= other.x && y >= other.y; }
+	const bool operator==(const Vect<T>& other) { return x == other.x && y == other.y; }
+	const bool operator!=(const Vect<T>& other) { return x != other.x || y != other.y; }
+	const bool operator<(const Vect<T>& other)  { return x < other.x&& y < other.y;    }
+	const bool operator>(const Vect<T>& other)  { return x > other.x && y > other.y;   }
+	const bool operator<=(const Vect<T>& other) { return x <= other.x && y <= other.y; }
+	const bool operator>=(const Vect<T>& other) { return x >= other.x && y >= other.y; }
 
 	const std::string str() const { return "Vect: (" + std::to_string(x) + ", " + std::to_string(y) + ")"; }
 	void print() const { SDL_Log("%s", ("Vect: " + str()).c_str()); }
@@ -69,34 +69,34 @@ struct Rect
 	};
 
 	// moar boilerplate
-	inline Rect& operator=(const Rect& other) { x = other.x; y = other.y; w = other.w; h = other.h; return *this; }
-	
-	inline Rect& operator+(const T n) { x += n; y += n; w += n; h += n; return *this; }
-	inline Rect& operator-(const T n) { x -= n; y -= n; w -= n; h -= n; return *this; }
-	inline Rect& operator*(const T n) { x *= n; y *= n; w *= n; h *= n; return *this; }
-	inline Rect& operator/(const T n) { x /= n; y /= n; w /= n; h /= n; return *this; }
+	inline Rect<T>& operator=(const Rect<T>& other) { x = other.x; y = other.y; w = other.w; h = other.h; return *this; }
 
-	inline Rect& operator+(const Rect& other) { x += other.x; y += other.y; w += other.w; h += other.h; return *this; }
-	inline Rect& operator-(const Rect& other) { x -= other.x; y -= other.y; w -= other.w; h -= other.h; return *this; }
-	inline Rect& operator*(const Rect& other) { x *= other.x; y *= other.y; w *= other.w; h *= other.h; return *this; }
-	inline Rect& operator/(const Rect& other) { x /= other.x; y /= other.y; w /= other.w; h /= other.h; return *this; }
+	inline Rect<T> operator+(const T n) { return Rect<T>{ x + n, y + n, w + n, h + n }; }
+	inline Rect<T> operator-(const T n) { return Rect<T>{ x - n, y - n, w - n, h - n }; }
+	inline Rect<T> operator*(const T n) { return Rect<T>{ x * n, y * n, w * n, h * n }; }
+	inline Rect<T> operator/(const T n) { return Rect<T>{ x / n, y / n, w / n, h / n }; }
 	
-	inline Rect& operator+=(const T n) { x += n; y += n; w += n; h += n; return *this; }
-	inline Rect& operator-=(const T n) { x -= n; y -= n; w -= n; h -= n; return *this; }
-	inline Rect& operator*=(const T n) { x *= n; y *= n; w *= n; h *= n; return *this; }
-	inline Rect& operator/=(const T n) { x /= n; y /= n; w /= n; h /= n; return *this; }
+	inline Rect<T> operator+(const Rect<T>& other) { return Rect<T>{ x + other.x, y + other.y, w + other.w, h + other.h }; }
+	inline Rect<T> operator-(const Rect<T>& other) { return Rect<T>{ x - other.x, y - other.y, w - other.w, h - other.h }; }
+	inline Rect<T> operator*(const Rect<T>& other) { return Rect<T>{ x * other.x, y * other.y, w * other.w, h * other.h }; }
+	inline Rect<T> operator/(const Rect<T>& other) { return Rect<T>{ x / other.x, y / other.y, w / other.w, h / other.h }; }
+	
+	inline Rect<T>& operator+=(const T n) { x += n; y += n; w += n; h += n; return *this; }
+	inline Rect<T>& operator-=(const T n) { x -= n; y -= n; w -= n; h -= n; return *this; }
+	inline Rect<T>& operator*=(const T n) { x *= n; y *= n; w *= n; h *= n; return *this; }
+	inline Rect<T>& operator/=(const T n) { x /= n; y /= n; w /= n; h /= n; return *this; }
 
-	inline Rect& operator+=(const Rect& other) { x += other.x; y += other.y; w += other.w; h += other.h; return *this; }
-	inline Rect& operator-=(const Rect& other) { x -= other.x; y -= other.y; w -= other.w; h -= other.h; return *this; }
-	inline Rect& operator*=(const Rect& other) { x *= other.x; y *= other.y; w *= other.w; h *= other.h; return *this; }
-	inline Rect& operator/=(const Rect& other) { x /= other.x; y /= other.y; w /= other.w; h /= other.h; return *this; }
+	inline Rect<T>& operator+=(const Rect<T>& other) { x += other.x; y += other.y; w += other.w; h += other.h; return *this; }
+	inline Rect<T>& operator-=(const Rect<T>& other) { x -= other.x; y -= other.y; w -= other.w; h -= other.h; return *this; }
+	inline Rect<T>& operator*=(const Rect<T>& other) { x *= other.x; y *= other.y; w *= other.w; h *= other.h; return *this; }
+	inline Rect<T>& operator/=(const Rect<T>& other) { x /= other.x; y /= other.y; w /= other.w; h /= other.h; return *this; }
 	
-	inline const bool operator==(const Rect& other) { return x == other.x && y == other.y && w == other.w && h == other.h; }
-	inline const bool operator!=(const Rect& other) { return x != other.x || y != other.y || w != other.w || h != other.h; }
-	inline const bool operator<(const Rect& other)  { return x < other.x && y < other.y && w < other.w && h < other.h;     }
-	inline const bool operator>(const Rect& other)  { return x > other.x && y > other.y && w > other.w && h > other.h;     }
-	inline const bool operator<=(const Rect& other) { return x <= other.x && y <= other.y && w <= other.w && h <= other.h; }
-	inline const bool operator>=(const Rect& other) { return x >= other.x && y >= other.y && w >= other.w && h >= other.h; }
+	inline const bool operator==(const Rect<T>& other) { return x == other.x && y == other.y && w == other.w && h == other.h; }
+	inline const bool operator!=(const Rect<T>& other) { return x != other.x || y != other.y || w != other.w || h != other.h; }
+	inline const bool operator<(const Rect<T>& other)  { return x < other.x && y < other.y && w < other.w && h < other.h;     }
+	inline const bool operator>(const Rect<T>& other)  { return x > other.x && y > other.y && w > other.w && h > other.h;     }
+	inline const bool operator<=(const Rect<T>& other) { return x <= other.x && y <= other.y && w <= other.w && h <= other.h; }
+	inline const bool operator>=(const Rect<T>& other) { return x >= other.x && y >= other.y && w >= other.w && h >= other.h; }
 
 	inline const std::string str() const { return "(" + std::to_string(x) + ", " +
 												        std::to_string(y) + ", " +

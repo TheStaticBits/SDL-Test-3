@@ -20,9 +20,12 @@ public:
 	static void load(Window& window);
 
 	void render(Window& window, Player& player);
+	void update(Player& player);
 	
-	const bool shouldSpawnNew(Window& window, Player& player, const uint32_t scale);
+	const bool shouldSpawnNew(Window& window, Player& player);
 	const bool isOffScreen(Window& window, Player& player);
+
+	void resize(Window& window, Player& player, const uint32_t newScale);
 
 private:
 
@@ -32,4 +35,6 @@ private:
 	std::unordered_map<uint32_t, Rect<float>> walls;
 	int64_t pOffset;
 	int64_t height;
+	int64_t distFromPlayer;
+	uint32_t scale;
 };

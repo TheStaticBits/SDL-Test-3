@@ -21,6 +21,7 @@ public:
 	void render(Window& window, Player& player);
 	
 	void determineScale(Window& window);
+	void resize(Window& window, Player& player);
 	
 	void addObstacle(Window& window, Player& player, const nlohmann::json& gData);
 

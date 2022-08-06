@@ -1,9 +1,10 @@
 #include "game.h"
 
+#include <iostream>
 #include <fstream>
+#include <string>
 #include <stdlib.h>
 #include <time.h>
-#include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -13,7 +14,7 @@
 #include "constants.h"
 
 Game::Game()
-	: gData(nlohmann::json::parse(std::ifstream(std::string(Consts::DATA_FP)))), // Load JSON from DATA_FP string_view
+	: gData(util::loadJSON(std::string(Consts::DATA_FP))), // Load JSON from DATA_FP string_view
 	  player(window), environment(window, player, gData)
 {
 	player.resize(window, environment);
@@ -52,7 +53,9 @@ void Game::iteration()
 	{
 		// Resize environment
 		environment.determineScale(window);
+		
 		player.resize(window, environment);
+		environment.resize(window, player);
 	}
 	
 	environment.render(window, player);

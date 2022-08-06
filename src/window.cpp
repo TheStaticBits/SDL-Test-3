@@ -39,7 +39,7 @@ Window::Window()
 	if (window == NULL)
 		util::logError("Create Window failed");
 
-	// SDL_SetWindowMinimumSize(window, display.w / 2, display.h / 2);
+	SDL_SetWindowMinimumSize(window, Consts::TUNNEL_WIDTH + 32, Consts::MIN_HEIGHT);
 	
 	// Setup renderer
 	util::logInfo("Setup renderer");
@@ -268,12 +268,12 @@ void Window::updateMousePos()
 
 void Window::testSwipe()
 {
-	const int64_t yMove = util::abs(static_cast<int64_t>(touchPos.y) - static_cast<int64_t>(swipeOrigin.y));
+	const int64_t yMove = abs(static_cast<int64_t>(touchPos.y) - static_cast<int64_t>(swipeOrigin.y));
 
 	// Test if swipe is long enough
 	if (yMove < size.y * Consts::SCREEN_SWIPE_PERCENT) { swipeUp = false; swipeDown = false; return; }
 
-	const int64_t xMove = util::abs(static_cast<int64_t>(touchPos.x) - static_cast<int64_t>(swipeOrigin.x));
+	const int64_t xMove = abs(static_cast<int64_t>(touchPos.x) - static_cast<int64_t>(swipeOrigin.x));
 	if (xMove > yMove) { swipeUp = false; swipeDown = false; return; } // Make sure player didn't swipe horizontally
 
 	// Activate swipe

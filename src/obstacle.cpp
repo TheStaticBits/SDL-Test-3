@@ -12,17 +12,18 @@
 Spritesheet Obstacle::tex = Spritesheet(); // overriden when calling Obstacle::load
 
 Obstacle::Obstacle(Window& window, Player& player, const nlohmann::json& data, const uint32_t scale)
-	: data(data), pOffset(-player.getOffset()), height(0) // Means that the obstacle will be at y = 0 when created
+	: data(data), pOffset(-player.getOffset()), // Means that the obstacle will be at y = 0 when created
+	  height(0), distFromPlayer(0), scale(scale) 
 {
-	float fScale = static_cast<float>(scale);
+	const nlohmann::json wallData = data["walls"];
+
 	// Finding height of obstacle
-	for (uint32_t i = 0; i < data.size(); i++)
+	for (uint32_t i = 0; i < wallData.size(); i++)
 	{
 		// Read from JSON file data about each object
-		walls[i] = Rect<float>{ window.getSize().x / 2 + data[i]["x"].get<float>() * fScale,
-								data[i]["y"].get<float>() * fScale,
-								data[i]["w"].get<float>() * static_cast<float>(tex.getSize().x) * fScale,
-								data[i]["h"].get<float>() * static_cast<float>(tex.getSize().y) * fScale };
+		walls[i] = Rect<float>{ wallData[i]["x"].get<float>(), wallData[i]["y"].get<float>(),
+								wallData[i]["w"].get<float>() * static_cast<float>(tex.getSize().x),
+								wallData[i]["h"].get<float>() * static_cast<float>(tex.getSize().y) };
 
 		// Direction object sticks out from the center Y position
 		int64_t stickOut = abs(static_cast<int64_t>(walls[i].y));
@@ -32,20 +33,20 @@ Obstacle::Obstacle(Window& window, Player& player, const nlohmann::json& data, c
 
 Obstacle::~Obstacle()
 {
-	
+
 }
 
 void Obstacle::load(Window& window)
 {
 	tex = Spritesheet(window, std::string(Consts::OBSTACLE_FP), { 0.33f, 0.33f });
-	tex.getSize().print();
 }
 
 void Obstacle::render(Window& window, Player& player)
 {
 	for (auto& wall : walls)
 	{
-		Rect<float> renderAt = wall.second;
+		Rect<float> renderAt = wall.second * static_cast<float>(scale);
+		renderAt.x += window.getSize().x / 2;
 		renderAt.y += pOffset + player.getOffset();
 		
 		// Temporary, replace with rendering from spritesheet later
@@ -53,12 +54,29 @@ void Obstacle::render(Window& window, Player& player)
 	}
 }
 
-const bool Obstacle::shouldSpawnNew(Window& window, Player& player, const uint32_t scale)
+void Obstacle::update(Player& player)
 {
-	return pOffset + player.getOffset() - height >= Consts::OBSTACLE_GAP * scale;
+	distFromPlayer = player.getTex().getRect().y - (pOffset + player.getOffset()); // Used during resizing
+}
+
+const bool Obstacle::shouldSpawnNew(Window& window, Player& player)
+{
+	return (pOffset + player.getOffset()) - (height * static_cast<float>(scale)) >= (Consts::OBSTACLE_GAP * scale);
 }
 
 const bool Obstacle::isOffScreen(Window& window, Player& player)
 {
-	return pOffset + player.getOffset() - height >= window.getSize().y;
+	return (pOffset + player.getOffset()) - (height * static_cast<float>(scale)) >= window.getSize().y;
+}
+
+void Obstacle::resize(Window& window, Player& player, const uint32_t newScale)
+{
+	// New distance between the player and the obstacle
+	float newDist = static_cast<float>(distFromPlayer) * (static_cast<float>(newScale) / static_cast<float>(scale));
+	
+	std::cout << pOffset << -(player.getOffset() - (player.getTex().getRect().y - newDist)) << std::endl;
+	// Finding the new offset
+	pOffset = -(player.getOffset() - (player.getTex().getRect().y - newDist));
+	
+	scale = newScale;
 }

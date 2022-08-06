@@ -28,13 +28,13 @@ Environment::~Environment()
 	
 }
 
-void Environment::update(Window& window, Player& player, const nlohmann::json& obstacleData)
+void Environment::update(Window& window, Player& player, const nlohmann::json& gData)
 {
-	if (obstacles.size() > 0 && obstacles[0].shouldSpawnNew(window, player, scale))
+	if (obstacles.size() > 0 && obstacles[0].shouldSpawnNew(window, player))
 	{
 		if (canSpawn)
 		{
-			addObstacle(window, player, obstacleData);
+			addObstacle(window, player, gData);
 			canSpawn = false;
 		}
 
@@ -45,6 +45,10 @@ void Environment::update(Window& window, Player& player, const nlohmann::json& o
 			canSpawn = true;
 		}
 	}
+
+	// Update obstacles
+	for (Obstacle& obstacle : obstacles)
+		obstacle.update(player);
 }
 
 void Environment::render(Window& window, Player& player)
@@ -76,15 +80,22 @@ void Environment::determineScale(Window& window)
 	if (scale == 0)
 		util::logError("Screen size not supported. Screen size is: " + window.getSize().str());
 
-	util::log("Set scale to " + std::to_string(scale));
+	util::logInfo("Set scale to " + std::to_string(scale));
 
 	wall.setScale(scale);
 }
 
-void Environment::addObstacle(Window& window, Player& player, const nlohmann::json& obstacleData)
+void Environment::resize(Window& window, Player& player)
+{
+	for (Obstacle& obstacle : obstacles)
+		obstacle.resize(window, player, scale);
+}
+
+void Environment::addObstacle(Window& window, Player& player, const nlohmann::json& gData)
 {
 	util::logInfo("Adding obstacle", true);
-	obstacles.emplace_back(Obstacle(window, player, obstacleData[std::string(Consts::OBSTACLE_DP)][rand() % obstacleData.size()], scale));
+	const nlohmann::json obstacleData = gData[std::string(Consts::OBSTACLE_DP)];
+	obstacles.push_back(Obstacle(window, player, obstacleData[rand() % obstacleData.size()], scale));
 }
 
 void Environment::renderWall(Window& window, Player& player, const uint32_t x, const bool flip)
