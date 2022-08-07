@@ -19,6 +19,7 @@ Environment::Environment(Window& window, Player& player, const nlohmann::json& g
 	util::logInfo("Loading obstacles from " + std::string(Consts::OBSTACLE_FP));
 	Obstacle::load(window);
 	determineScale(window);
+	resetWallPos(window);
 	
 	addObstacle(window, player, gData);
 }
@@ -48,7 +49,7 @@ void Environment::update(Window& window, Player& player, const nlohmann::json& g
 
 	// Update obstacles
 	for (Obstacle& obstacle : obstacles)
-		obstacle.update(player);
+		obstacle.update(window, player);
 }
 
 void Environment::render(Window& window, Player& player)
@@ -57,9 +58,13 @@ void Environment::render(Window& window, Player& player)
 	for (Obstacle& obstacle : obstacles)
 		obstacle.render(window, player);
 	
-	// Left wall
-	renderWall(window, player, (window.getSize().x - Consts::TUNNEL_WIDTH * scale) / 2 - static_cast<uint32_t>(wall.getRect().w));
-	renderWall(window, player, (window.getSize().x + Consts::TUNNEL_WIDTH * scale) / 2, true);
+	// Wall sides fill
+	window.drawRect(leftFill, Consts::bgColor);
+	window.drawRect(rightFill, Consts::bgColor);
+
+	// Wall Images
+	renderWall(window, player, wallLeftX - wall.getRect().w);
+	renderWall(window, player, wallRightX, true);
 }
 
 void Environment::determineScale(Window& window)
@@ -89,6 +94,19 @@ void Environment::resize(Window& window, Player& player)
 {
 	for (Obstacle& obstacle : obstacles)
 		obstacle.resize(window, player, scale);
+
+	resetWallPos(window);
+}
+
+void Environment::resetWallPos(Window& window)
+{
+	// Wall X positions
+	wallLeftX = static_cast<float>((window.getSize().x - Consts::TUNNEL_WIDTH * scale) / 2);
+	wallRightX = static_cast<float>((window.getSize().x + Consts::TUNNEL_WIDTH * scale) / 2);
+
+	// Wall sides
+	leftFill = { 0.0f, 0.0f, wallLeftX, static_cast<float>(window.getSize().y) };
+	rightFill = { wallRightX, 0.0f, static_cast<float>(window.getSize().x) - wallRightX, static_cast<float>(window.getSize().y) };
 }
 
 void Environment::addObstacle(Window& window, Player& player, const nlohmann::json& gData)
@@ -98,7 +116,7 @@ void Environment::addObstacle(Window& window, Player& player, const nlohmann::js
 	obstacles.push_back(Obstacle(window, player, obstacleData[rand() % obstacleData.size()], scale));
 }
 
-void Environment::renderWall(Window& window, Player& player, const uint32_t x, const bool flip)
+void Environment::renderWall(Window& window, Player& player, const float x, const bool flip)
 {
 	Rect<int64_t> wallRect = wall.getRect().cast<int64_t>();
 	
@@ -108,7 +126,7 @@ void Environment::renderWall(Window& window, Player& player, const uint32_t x, c
 		 y < static_cast<int32_t>(window.getSize().y); 
 		 y += static_cast<int32_t>(wallRect.h))
 	{
-		wall.getRect().x = static_cast<float>(x);
+		wall.getRect().x = x;
 		wall.getRect().y = static_cast<float>(y);
 		if (flip) window.render(wall, SDL_FLIP_HORIZONTAL);
 		else window.render(wall);

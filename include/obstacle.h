@@ -20,7 +20,8 @@ public:
 	static void load(Window& window);
 
 	void render(Window& window, Player& player);
-	void update(Player& player);
+	void update(Window& window, Player& player);
+	void movement(Window& window);
 	
 	const bool shouldSpawnNew(Window& window, Player& player);
 	const bool isOffScreen(Window& window, Player& player);
@@ -33,8 +34,13 @@ private:
 
 	nlohmann::json data;
 	std::unordered_map<uint32_t, Rect<float>> walls;
-	int64_t pOffset;
+
+	int64_t pOffset; // Offset from player
 	int64_t height;
 	int64_t distFromPlayer;
 	uint32_t scale;
+
+	// Movement variables
+	float xOffset; // x offset of obstacle from the center
+	int8_t direction; // Either 1 or -1, the direction that the object is moving in.
 };

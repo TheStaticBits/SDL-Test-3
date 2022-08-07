@@ -22,17 +22,21 @@ public:
 	
 	void determineScale(Window& window);
 	void resize(Window& window, Player& player);
+	void resetWallPos(Window& window);
 	
 	void addObstacle(Window& window, Player& player, const nlohmann::json& gData);
 
 	inline const uint32_t getScale() { return scale; }
 
 private:
-	void renderWall(Window& window, Player& player, const uint32_t x, const bool flip = false);
+	void renderWall(Window& window, Player& player, const float x, const bool flip = false);
 	
 	Texture wall;
 	uint32_t scale;
 	std::vector<Obstacle> obstacles;
 
 	bool canSpawn;
+
+	float wallLeftX, wallRightX;
+	Rect<float> leftFill, rightFill;
 };
